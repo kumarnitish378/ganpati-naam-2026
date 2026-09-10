@@ -179,8 +179,10 @@ footer a{color:var(--brass)}
 
 <div class="done" id="done">
   <button class="dl" id="dlbtn">तस्वीर डाउनलोड कीजिए</button>
-  <button class="share" id="shbtn">WhatsApp · स्टेटस पर भेजिए</button>
-  <p class="nudge">भेजते समय नीचे <b>“Add a message”</b> में <b>पेस्ट</b> कीजिए —<br>मैसेज और लिंक अपने आप कॉपी हो जाएगा 🙏</p>
+  <button class="share on" id="onemsgbtn">एक ही मैसेज में भेजिए ⚡</button>
+  <p class="nudge">तस्वीर, मैसेज और लिंक — तीनों एक साथ। पेस्ट करने की ज़रूरत नहीं।</p>
+  <button class="share" id="shbtn">पूरी क्वालिटी में भेजिए</button>
+  <p class="nudge">बड़ी तस्वीर जाएगी — भेजते समय <b>“Add a message”</b> में <b>पेस्ट</b> कीजिए 🙏</p>
   <div class="step2" id="step2" hidden>
     <p class="step2t">पेस्ट करना रह गया? कोई बात नहीं —<br>लिंक अलग से भी भेज सकते हैं।</p>
     <button class="share on" id="msgbtn">उसी चैट में लिंक भेजिए</button>
@@ -454,10 +456,10 @@ function siteUrl(){
 
 /* Written in the sharer's own voice: "I made mine, you make yours" invites
    the reader far better than a generic advert would. */
-function shareText(){
+function shareText(link){
   const name = nm.value.trim();
   return 'मैंने अपने नाम वाला गणपति बनाया 🙏' + (name ? ' — ' + name : '') + '\n' +
-         'आप भी अपने नाम का बनाइए, सिर्फ़ ₹' + (CONFIG.PRICE_PAISE/100) + ' में —\n' + siteUrl();
+         'आप भी अपने नाम का बनाइए, सिर्फ़ ₹' + (CONFIG.PRICE_PAISE/100) + ' में —\n' + (link || siteUrl());
 }
 
 function offerStep2(hint){
@@ -465,6 +467,82 @@ function offerStep2(hint){
   shareHint.textContent = hint;
   shareHint.hidden = false;
 }
+
+/* ---------- one-message share ----------
+   WhatsApp previews a link by reading Open Graph tags, so the picture has
+   to live at a URL. The canvas is composed into a 1200x630 card — a portrait
+   image would be cropped to nothing in a preview — uploaded to the worker,
+   and the returned link carries picture, text and a tappable URL in a single
+   message with no caption paste. */
+function cardBlob(){
+  const c = document.createElement('canvas');
+  c.width = 1200; c.height = 630;
+  const g = c.getContext('2d');
+
+  const bg = g.createLinearGradient(0, 0, 1200, 630);
+  bg.addColorStop(0, '#2A1510');
+  bg.addColorStop(1, '#150A08');
+  g.fillStyle = bg;
+  g.fillRect(0, 0, 1200, 630);
+
+  // the finished picture, cropped to a panel down the left
+  const panel = 400;
+  const scale = Math.max(panel / cv.width, 630 / cv.height);
+  const sw = panel / scale, sh = 630 / scale;
+  g.drawImage(cv, (cv.width - sw) / 2, 0, sw, sh, 0, 0, panel, 630);
+
+  g.fillStyle = 'rgba(232,163,23,.55)';
+  g.fillRect(panel, 0, 3, 630);
+
+  const x = panel + 60, right = 1200 - 60 - x;
+  g.textAlign = 'left';
+
+  g.fillStyle = '#A78F6B';
+  g.font = '500 30px "Noto Sans Devanagari", sans-serif';
+  g.fillText('अपने नाम वाला गणपति', x, 150);
+
+  const name = nm.value.trim() || 'आपका नाम';
+  let size = 96;
+  do {
+    g.font = '400 ' + size + 'px ' + NAME_FONT_STACK;
+    size -= 3;
+  } while (size > 34 && g.measureText(name).width > right);
+  g.fillStyle = '#E8A317';
+  g.fillText(name, x, 290);
+
+  g.fillStyle = '#F6E9D2';
+  g.font = '500 34px "Noto Sans Devanagari", sans-serif';
+  g.fillText('आप भी अपने नाम का बनाइए', x, 400);
+  g.fillStyle = '#E8A317';
+  g.font = '700 44px "Noto Sans Devanagari", sans-serif';
+  g.fillText('सिर्फ़ ₹' + (CONFIG.PRICE_PAISE / 100) + ' में', x, 470);
+
+  return new Promise(res => c.toBlob(res, 'image/jpeg', 0.82));
+}
+
+document.getElementById('onemsgbtn').onclick = async (e)=>{
+  const btn = e.currentTarget;
+  const label = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'तैयार हो रहा है…';
+  shareHint.hidden = true;
+  try{
+    const card = await cardBlob();
+    const r = await fetch(CONFIG.WORKER_URL + '/share', {
+      method: 'POST',
+      headers: { 'Content-Type': 'image/jpeg' },
+      body: card
+    });
+    const out = await r.json();
+    if(!out.url) throw new Error('share');
+    window.open('https://wa.me/?text=' + encodeURIComponent(shareText(out.url)), '_blank');
+  }catch(err){
+    shareHint.textContent = 'अभी नहीं भेज पाए — नीचे वाले तरीक़े से भेजिए';
+    shareHint.hidden = false;
+  }
+  btn.disabled = false;
+  btn.textContent = label;
+};
 
 // Aim: one WhatsApp message, image with the text under it as a caption.
 // Only a paste can put text in that caption box — passing it as Web Share

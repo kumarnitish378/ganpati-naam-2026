@@ -1,3 +1,16 @@
 name = "ganpati-pay"
 main = "worker.js"
 compatibility_date = "2026-09-01"
+
+# Share cards, stored with a TTL so they expire on their own.
+[[kv_namespaces]]
+binding = "SHARES"
+id = "e21d88ccbc7e474aa65ec95902ceb647"
+
+# Caps uploads per IP — /share is public and would otherwise be free
+# image hosting for anyone who finds it.
+[[unsafe.bindings]]
+name = "SHARE_LIMIT"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 12, period = 60 }
