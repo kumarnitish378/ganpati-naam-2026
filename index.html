@@ -123,19 +123,6 @@ input::placeholder{color:#6B563C}
 .nudge{
   font-size:13px;color:var(--muted);text-align:center;margin:10px 2px 0;line-height:1.5;
 }
-.step2{
-  margin:18px 0 0;padding:14px;
-  border:1px solid var(--lamp-dim);border-radius:4px;
-  background:rgba(232,163,23,.07);
-}
-.step2t{margin:0 0 12px;font-size:14px;color:var(--ivory);text-align:center;line-height:1.6}
-.share.on{margin:0;background:var(--lamp);color:#2A1403;border-color:var(--lamp);font-weight:700}
-.copy{
-  display:block;width:100%;margin:8px 0 0;padding:12px;text-align:center;
-  font-size:15px;color:var(--muted);background:transparent;
-  border:1px solid #3A2118;border-radius:4px;cursor:pointer;
-  font-family:"Noto Sans Devanagari",sans-serif;
-}
 .again{
   display:block;margin:16px auto 0;background:none;border:none;
   color:var(--muted);font-size:14px;text-decoration:underline;cursor:pointer;
@@ -179,15 +166,8 @@ footer a{color:var(--brass)}
 
 <div class="done" id="done">
   <button class="dl" id="dlbtn">तस्वीर डाउनलोड कीजिए</button>
-  <button class="share on" id="onemsgbtn">एक ही मैसेज में भेजिए ⚡</button>
-  <p class="nudge">तस्वीर, मैसेज और लिंक — तीनों एक साथ। पेस्ट करने की ज़रूरत नहीं।</p>
-  <button class="share" id="shbtn">पूरी क्वालिटी में भेजिए</button>
-  <p class="nudge">बड़ी तस्वीर जाएगी — भेजते समय <b>“Add a message”</b> में <b>पेस्ट</b> कीजिए 🙏</p>
-  <div class="step2" id="step2" hidden>
-    <p class="step2t">पेस्ट करना रह गया? कोई बात नहीं —<br>लिंक अलग से भी भेज सकते हैं।</p>
-    <button class="share on" id="msgbtn">उसी चैट में लिंक भेजिए</button>
-    <button class="copy" id="copybtn">मैसेज दोबारा कॉपी कीजिए</button>
-  </div>
+  <button class="share" id="shbtn">WhatsApp पर भेजिए</button>
+  <p class="nudge">तस्वीर, मैसेज और लिंक — एक ही मैसेज में 🙏</p>
   <p class="hint" id="shareHint" hidden></p>
   <button class="again" id="againbtn">दूसरा नाम बनाइए</button>
 </div>
@@ -447,9 +427,6 @@ document.getElementById('dlbtn').onclick = async ()=>{
 };
 
 const shareHint = document.getElementById('shareHint');
-const msgbtn = document.getElementById('msgbtn');
-const step2 = document.getElementById('step2');
-
 function siteUrl(){
   return CONFIG.SITE_URL || (location.origin + location.pathname);
 }
@@ -462,18 +439,11 @@ function shareText(link){
          'आप भी अपने नाम का बनाइए, सिर्फ़ ₹' + (CONFIG.PRICE_PAISE/100) + ' में —\n' + (link || siteUrl());
 }
 
-function offerStep2(hint){
-  step2.hidden = false;
-  shareHint.textContent = hint;
-  shareHint.hidden = false;
-}
-
-/* ---------- one-message share ----------
-   WhatsApp previews a link by reading Open Graph tags, so the picture has
+/* WhatsApp previews a link by reading Open Graph tags, so the picture has
    to live at a URL. The canvas is composed into a 1200x630 card — a portrait
    image would be cropped to nothing in a preview — uploaded to the worker,
    and the returned link carries picture, text and a tappable URL in a single
-   message with no caption paste. */
+   message, with no caption to paste. */
 function cardBlob(){
   const c = document.createElement('canvas');
   c.width = 1200; c.height = 630;
@@ -520,74 +490,31 @@ function cardBlob(){
   return new Promise(res => c.toBlob(res, 'image/jpeg', 0.82));
 }
 
-document.getElementById('onemsgbtn').onclick = async (e)=>{
+document.getElementById('shbtn').onclick = async (e)=>{
   const btn = e.currentTarget;
   const label = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'तैयार हो रहा है…';
   shareHint.hidden = true;
+
+  let link;
   try{
-    const card = await cardBlob();
     const r = await fetch(CONFIG.WORKER_URL + '/share', {
       method: 'POST',
       headers: { 'Content-Type': 'image/jpeg' },
-      body: card
+      body: await cardBlob()
     });
-    const out = await r.json();
-    if(!out.url) throw new Error('share');
-    window.open('https://wa.me/?text=' + encodeURIComponent(shareText(out.url)), '_blank');
-  }catch(err){
-    shareHint.textContent = 'अभी नहीं भेज पाए — नीचे वाले तरीक़े से भेजिए';
-    shareHint.hidden = false;
-  }
+    link = (await r.json()).url;
+  }catch(err){ /* fall through: the plain site link still works, just without
+                  a picture in the preview */ }
+
+  window.open('https://wa.me/?text=' + encodeURIComponent(shareText(link)), '_blank');
   btn.disabled = false;
   btn.textContent = label;
 };
 
-// Aim: one WhatsApp message, image with the text under it as a caption.
-// Only a paste can put text in that caption box — passing it as Web Share
-// `text` makes WhatsApp post it as its own message ahead of the photo
-// (w3c/web-share#279). So the message is on the clipboard before the share
-// sheet opens, leaving the user a single paste.
-//
-// The copy is deliberately not awaited: an extra await between the click and
-// share() can spend the transient activation that share() requires.
-document.getElementById('shbtn').onclick = async ()=>{
-  const blob = await toBlob();
-  const file = new File([blob], fileName(), {type:'image/jpeg'});
-  shareHint.hidden = true;
-  step2.hidden = true;
-
-  const copied = navigator.clipboard.writeText(shareText()).then(()=>true).catch(()=>false);
-
-  if(navigator.canShare && navigator.canShare({files:[file]})){
-    try{ await navigator.share({ files:[file] }); }
-    catch(e){ return; }
-    offerStep2(await copied ? 'भेज दी 🙏 — पेस्ट किया या नहीं?' : 'तस्वीर भेज दी 🙏');
-    return;
-  }
-
-  document.getElementById('dlbtn').click();
-  offerStep2('तस्वीर डाउनलोड हो गई — पहले वह भेजिए');
-};
-
-document.getElementById('copybtn').onclick = async ()=>{
-  try{
-    await navigator.clipboard.writeText(shareText());
-    shareHint.textContent = 'लिंक कॉपी हो गया — कहीं भी पेस्ट कीजिए';
-  }catch(e){
-    shareHint.textContent = siteUrl();
-  }
-  shareHint.hidden = false;
-};
-
-msgbtn.onclick = ()=>{
-  window.open('https://wa.me/?text=' + encodeURIComponent(shareText()), '_blank');
-};
-
 document.getElementById('againbtn').onclick = ()=>{
   paid = false;
-  step2.hidden = true;
   shareHint.hidden = true;
   document.getElementById('done').classList.remove('on');
   document.getElementById('buy').classList.remove('off');
