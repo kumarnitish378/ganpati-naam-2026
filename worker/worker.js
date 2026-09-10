@@ -9,7 +9,7 @@
  * Set ALLOWED_ORIGIN to your GitHub Pages URL before going live.
  */
 
-const ALLOWED_ORIGIN = "*"; // e.g. "https://yourname.github.io"
+const ALLOWED_ORIGIN = "https://kumarnitish378.github.io";
 
 const cors = {
   "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
