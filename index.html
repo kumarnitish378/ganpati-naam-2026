@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>अपने नाम वाला गणपति — Ganesh Chaturthi 2026</title>
+<meta name="description" content="अपने नाम के साथ गणपति बप्पा की तस्वीर बनाइए और WhatsApp स्टेटस पर लगाइए। ₹9 में 3 डिज़ाइन।">
+<meta property="og:title" content="अपने नाम वाला गणपति">
+<meta property="og:description" content="नाम लिखिए, तुरंत तस्वीर पाइए। ₹9">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Baloo+2:wght@400;500;600;700&family=Yatra+One&family=Tiro+Devanagari+Hindi:ital@0;1&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+<style>
+:root{
+  --ink:#150A08;
+  --ink-2:#20100C;
+  --lamp:#E8A317;
+  --lamp-dim:#8A6516;
+  --kumkum:#A4162A;
+  --ivory:#F6E9D2;
+  --brass:#B08A4A;
+  --muted:#A78F6B;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(120% 60% at 50% 0%, #2A1510 0%, var(--ink) 60%),
+    var(--ink);
+  color:var(--ivory);
+  font-family:"Noto Sans Devanagari",system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.wrap{max-width:520px;margin:0 auto;padding:20px 18px 64px}
+
+header{text-align:center;padding:6px 0 18px}
+h1{
+  font-family:"Tiro Devanagari Hindi",serif;
+  font-size:30px;line-height:1.3;margin:0 0 6px;
+  color:var(--lamp);font-weight:400;
+}
+.sub{margin:0;color:var(--muted);font-size:14px}
+
+/* ---------- preview ---------- */
+.stage{position:relative;margin:0 0 6px}
+.frame{
+  position:relative;border-radius:6px;overflow:hidden;
+  border:1px solid var(--lamp-dim);
+  box-shadow:0 0 46px rgba(232,163,23,.18), 0 12px 34px rgba(0,0,0,.6);
+  background:#0d0605;
+}
+canvas{display:block;width:100%;height:auto}
+.loading{
+  position:absolute;inset:0;display:grid;place-items:center;
+  background:#0d0605;color:var(--muted);font-size:14px;
+}
+.loading[hidden]{display:none}
+
+/* ---------- template strip ---------- */
+.pickers{display:flex;gap:10px;margin:16px 0 4px}
+.pick{
+  flex:1;padding:0;background:none;border:1px solid transparent;
+  border-radius:4px;overflow:hidden;cursor:pointer;line-height:0;
+  opacity:.55;transition:opacity .18s ease, border-color .18s ease;
+}
+.pick img{width:100%;height:auto;display:block}
+.pick[aria-pressed="true"]{opacity:1;border-color:var(--lamp)}
+.pick:focus-visible{outline:2px solid var(--lamp);outline-offset:2px}
+
+/* ---------- form ---------- */
+.field{margin:18px 0 0}
+label{display:block;font-size:14px;color:var(--muted);margin:0 0 6px}
+input{
+  width:100%;padding:13px 14px;font-size:17px;
+  font-family:"Noto Sans Devanagari",sans-serif;
+  color:var(--ivory);background:var(--ink-2);
+  border:1px solid #3A2118;border-radius:4px;
+}
+input:focus{outline:none;border-color:var(--lamp)}
+input::placeholder{color:#6B563C}
+.hint{font-size:13px;color:var(--muted);margin:6px 0 0}
+.err{font-size:13px;color:#E4736A;margin:14px 0 0;min-height:1px;text-align:center}
+
+/* ---------- pay ---------- */
+.pay{
+  width:100%;margin:22px 0 0;padding:16px;
+  font-family:"Noto Sans Devanagari",sans-serif;
+  font-size:18px;font-weight:700;
+  color:#2A1403;background:var(--lamp);
+  border:none;border-radius:4px;cursor:pointer;
+}
+.pay:disabled{opacity:.45;cursor:not-allowed}
+.pay:focus-visible{outline:2px solid var(--ivory);outline-offset:3px}
+.terms{font-size:13px;color:var(--muted);text-align:center;margin:12px 0 0}
+.slots{
+  text-align:center;font-size:14px;color:var(--kumkum);
+  background:rgba(164,22,42,.12);border:1px solid rgba(164,22,42,.35);
+  border-radius:4px;padding:9px;margin:16px 0 0;
+}
+
+/* ---------- done ---------- */
+.done{display:none}
+.done.on{display:block}
+.buy.off{display:none}
+.dl{
+  display:block;width:100%;margin:18px 0 0;padding:16px;text-align:center;
+  font-size:18px;font-weight:700;text-decoration:none;
+  color:#2A1403;background:var(--lamp);border:none;border-radius:4px;cursor:pointer;
+  font-family:"Noto Sans Devanagari",sans-serif;
+}
+.share{
+  display:block;width:100%;margin:10px 0 0;padding:15px;text-align:center;
+  font-size:17px;font-weight:500;
+  color:var(--ivory);background:transparent;
+  border:1px solid var(--brass);border-radius:4px;cursor:pointer;
+  font-family:"Noto Sans Devanagari",sans-serif;
+}
+.again{
+  display:block;margin:16px auto 0;background:none;border:none;
+  color:var(--muted);font-size:14px;text-decoration:underline;cursor:pointer;
+  font-family:"Noto Sans Devanagari",sans-serif;
+}
+footer{text-align:center;margin:40px 0 0;font-size:13px;color:#6B563C}
+footer a{color:var(--brass)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>अपने नाम वाला गणपति</h1>
+  <p class="sub">नाम लिखिए · तस्वीर पाइए · स्टेटस पर लगाइए</p>
+</header>
+
+<div class="stage">
+  <div class="frame">
+    <canvas id="cv" width="941" height="1672"></canvas>
+    <div class="loading" id="load">तस्वीर तैयार हो रही है…</div>
+  </div>
+</div>
+
+<div class="pickers" id="picks"></div>
+
+<div class="buy" id="buy">
+  <div class="field">
+    <label for="nm">नाम (जो तस्वीर पर लिखा जाएगा)</label>
+    <input id="nm" type="text" maxlength="22" placeholder="जैसे — श्रद्धा" autocomplete="name" enterkeyhint="done">
+    <p class="hint">हिंदी या English, दोनों चलेंगे</p>
+  </div>
+
+  <p class="err" id="er"></p>
+
+  <button class="pay" id="paybtn" disabled>₹9 देकर तस्वीर पाइए</button>
+  <p class="terms">UPI · एक बार का भुगतान · तुरंत डाउनलोड</p>
+  <p class="slots" id="slots">इस बार सिर्फ़ 50 तस्वीरें — 13 सितम्बर रात तक</p>
+</div>
+
+<div class="done" id="done">
+  <button class="dl" id="dlbtn">तस्वीर डाउनलोड कीजिए</button>
+  <button class="share" id="shbtn">WhatsApp पर भेजिए</button>
+  <button class="share" id="msgbtn" hidden>अब मैसेज भी भेजिए</button>
+  <p class="hint" id="shareHint" hidden></p>
+  <button class="again" id="againbtn">दूसरा नाम बनाइए</button>
+</div>
+
+<footer>
+  गणेश चतुर्थी 2026 · <a href="https://instagram.com/" id="ig">Instagram</a>
+</footer>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — edit these three lines, nothing else.
+   ============================================================ */
+const CONFIG = {
+  RAZORPAY_KEY_ID : "rzp_test_TO8sf9TkigZSWW", // TEST key reused from safe-tag-project — swap for rzp_live_xxxx before real launch
+  WORKER_URL      : "https://ganpati-pay.nitish-ns378.workers.dev",
+  PRICE_PAISE     : 900,                   // 900 = ₹9
+  INSTAGRAM       : "https://instagram.com/YOURHANDLE",
+  NAME_FONT       : "Rozha One",           // "Rozha One" | "Baloo 2" | "Yatra One" | "Tiro Devanagari Hindi"
+  SITE_URL        : "",                    // your live URL — blank uses the current page URL
+  DEMO_MODE       : false                  // true = skip payment, for testing. SET FALSE BEFORE LAUNCH.
+};
+
+const NAME_FONT_FALLBACK = {
+  "Rozha One": "serif",
+  "Baloo 2": "sans-serif",
+  "Yatra One": "cursive",
+  "Tiro Devanagari Hindi": "serif"
+};
+const NAME_FONT_STACK = '"' + CONFIG.NAME_FONT + '", ' + (NAME_FONT_FALLBACK[CONFIG.NAME_FONT] || 'serif');
+
+/* ============================================================
+   TEMPLATES — box = where the name is drawn, in image pixels.
+   Image is 941 x 1672.
+   ============================================================ */
+const TEMPLATES = [
+  { id:"t1", src:"assets/t1.jpg", thumb:"assets/t1_thumb.jpg", label:"बैनर",
+    box:{x:200, y:130, w:540, h:128}, color:"#6B3410", shadow:"rgba(255,236,190,.55)" },
+  { id:"t2", src:"assets/t2.jpg", thumb:"assets/t2_thumb.jpg", label:"बैनर 2",
+    box:{x:208, y:128, w:524, h:126}, color:"#6B3410", shadow:"rgba(255,236,190,.55)" },
+  { id:"t3", src:"assets/t3.jpg", thumb:"assets/t3_thumb.jpg", label:"रंगोली",
+    box:{x:255, y:1080, w:430, h:190}, color:"#8A2417", shadow:"rgba(255,240,205,.5)" }
+];
+
+const cv   = document.getElementById('cv');
+const ctx  = cv.getContext('2d');
+const nm   = document.getElementById('nm');
+const er   = document.getElementById('er');
+const pay  = document.getElementById('paybtn');
+const load = document.getElementById('load');
+
+let current = 0;
+let paid    = false;
+const imgs  = {};
+
+document.getElementById('ig').href = CONFIG.INSTAGRAM;
+
+/* ---------- template picker ---------- */
+const picks = document.getElementById('picks');
+TEMPLATES.forEach((t,i)=>{
+  const b = document.createElement('button');
+  b.className='pick'; b.type='button';
+  b.setAttribute('aria-pressed', i===0);
+  b.setAttribute('aria-label', t.label);
+  b.innerHTML = '<img src="'+t.thumb+'" alt="'+t.label+'" loading="lazy">';
+  b.onclick = ()=>{ current=i; syncPicks(); draw(); };
+  picks.appendChild(b);
+});
+function syncPicks(){
+  [...picks.children].forEach((b,i)=>b.setAttribute('aria-pressed', i===current));
+}
+
+/* ---------- image loading ---------- */
+function loadImg(src){
+  return new Promise((res,rej)=>{
+    const im=new Image();
+    im.crossOrigin='anonymous';
+    im.onload=()=>res(im);
+    im.onerror=()=>rej(new Error('image '+src));
+    im.src=src;
+  });
+}
+
+/* ---------- text fitting ----------
+   Shrinks the font until the name fits the reserved box.
+   Never let the name overflow onto the artwork.            */
+function fitFont(text, box){
+  let size = box.h * 0.72;
+  const min = 22;
+  while(size > min){
+    ctx.font = '400 '+size+'px '+NAME_FONT_STACK;
+    const m = ctx.measureText(text);
+    if(m.width <= box.w * 0.90) break;
+    size -= 2;
+  }
+  // short names should still fill the space, but never look stretched
+  if(size > min){
+    ctx.font = '400 '+size+'px '+NAME_FONT_STACK;
+    const w = ctx.measureText(text).width;
+    const target = box.w * 0.70;
+    if(w < target){
+      const up = Math.min(size * (target / w), box.h * 0.80);
+      size = up;
+    }
+  }
+  ctx.font = '400 '+size+'px '+NAME_FONT_STACK;
+  return size;
+}
+
+function drawWatermark(){
+  ctx.save();
+  ctx.globalAlpha = .34;
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '600 40px "Noto Sans Devanagari", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.translate(cv.width/2, cv.height/2);
+  ctx.rotate(-Math.PI/5);
+  for(let y=-1500; y<=1500; y+=190){
+    for(let x=-1100; x<=1100; x+=520){
+      ctx.fillText('नमूना · PREVIEW', x, y);
+    }
+  }
+  ctx.restore();
+}
+
+async function draw(){
+  const t = TEMPLATES[current];
+  if(!imgs[t.id]){
+    load.hidden = false;
+    try{ imgs[t.id] = await loadImg(t.src); }
+    catch(e){ load.textContent = 'तस्वीर लोड नहीं हुई — पेज रीफ़्रेश कीजिए'; return; }
+  }
+  load.hidden = true;
+
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.drawImage(imgs[t.id], 0, 0, cv.width, cv.height);
+
+  const name = (nm.value || '').trim();
+  if(name){
+    const b = t.box;
+    fitFont(name, b);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = t.shadow;
+    ctx.shadowBlur = 14;
+    ctx.fillStyle = t.color;
+    ctx.fillText(name, b.x + b.w/2, b.y + b.h/2);
+    ctx.shadowBlur = 0;
+  }
+  if(!paid) drawWatermark();
+}
+
+/* ---------- validation ---------- */
+function validate(){
+  const okName = nm.value.trim().length >= 2;
+  pay.disabled = !okName;
+  return okName;
+}
+
+let t0;
+nm.addEventListener('input', ()=>{ validate(); clearTimeout(t0); t0=setTimeout(draw,120); });
+
+/* ---------- payment ---------- */
+pay.addEventListener('click', async ()=>{
+  if(!validate()) return;
+
+  if(CONFIG.DEMO_MODE){ unlock(); return; }
+
+  if(!CONFIG.RAZORPAY_KEY_ID || !CONFIG.WORKER_URL){
+    er.textContent = 'भुगतान अभी चालू नहीं है';
+    return;
+  }
+
+  pay.disabled = true;
+  pay.textContent = 'रुकिए…';
+  try{
+    const r = await fetch(CONFIG.WORKER_URL + '/order', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        amount: CONFIG.PRICE_PAISE,
+        name: nm.value.trim(),
+        template: TEMPLATES[current].id
+      })
+    });
+    if(!r.ok) throw new Error('order');
+    const order = await r.json();
+
+    const rzp = new Razorpay({
+      key: CONFIG.RAZORPAY_KEY_ID,
+      amount: order.amount,
+      currency: 'INR',
+      name: 'नाम वाला गणपति',
+      description: 'गणेश चतुर्थी 2026',
+      order_id: order.id,
+      prefill: { name: nm.value.trim() },
+      theme: { color:'#E8A317' },
+      handler: async (res)=>{
+        try{
+          const v = await fetch(CONFIG.WORKER_URL + '/verify', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(res)
+          });
+          const out = await v.json();
+          if(out.ok) unlock();
+          else er.textContent = 'भुगतान जाँच में दिक़्क़त — हमें WhatsApp कीजिए';
+        }catch(e){
+          er.textContent = 'भुगतान जाँच में दिक़्क़त — हमें WhatsApp कीजिए';
+        }
+        resetPayBtn();
+      },
+      modal:{ ondismiss: resetPayBtn }
+    });
+    rzp.on('payment.failed', ()=>{
+      er.textContent = 'भुगतान पूरा नहीं हुआ — दोबारा कोशिश कीजिए';
+      resetPayBtn();
+    });
+    rzp.open();
+  }catch(e){
+    er.textContent = 'अभी कनेक्ट नहीं हो पा रहा — दोबारा कोशिश कीजिए';
+    resetPayBtn();
+  }
+});
+
+function resetPayBtn(){
+  pay.disabled = false;
+  pay.textContent = '₹9 देकर तस्वीर पाइए';
+  validate();
+}
+
+function unlock(){
+  paid = true;
+  document.getElementById('buy').classList.add('off');
+  document.getElementById('done').classList.add('on');
+  draw();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ---------- download & share ---------- */
+function fileName(){
+  const n = nm.value.trim().replace(/\s+/g,'-');
+  return 'ganpati-' + (n || 'naam') + '.jpg';
+}
+function toBlob(){
+  return new Promise(res=>cv.toBlob(res, 'image/jpeg', 0.92));
+}
+
+document.getElementById('dlbtn').onclick = async ()=>{
+  const blob = await toBlob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = fileName();
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 4000);
+};
+
+const shareHint = document.getElementById('shareHint');
+const msgbtn = document.getElementById('msgbtn');
+
+function shareText(){
+  const site = CONFIG.SITE_URL || (location.origin + location.pathname);
+  return 'गणपति बप्पा मोरया 🙏 अपने नाम के साथ अपना गणपति बनाइए — ' + site;
+}
+
+function offerMessage(hint){
+  msgbtn.hidden = false;
+  shareHint.textContent = hint;
+  shareHint.hidden = false;
+}
+
+// The message is a second, separate send. Passing it as Web Share `text`
+// makes WhatsApp post it as its own message *ahead* of the photo
+// (w3c/web-share#279), and a caption cannot be set from a web page at all —
+// so the photo goes alone first and the message follows it, staying tappable.
+document.getElementById('shbtn').onclick = async ()=>{
+  const blob = await toBlob();
+  const file = new File([blob], fileName(), {type:'image/jpeg'});
+  shareHint.hidden = true;
+  msgbtn.hidden = true;
+
+  if(navigator.canShare && navigator.canShare({files:[file]})){
+    try{ await navigator.share({ files:[file] }); }
+    catch(e){ return; }
+    offerMessage('तस्वीर भेज दी — अब उसी चैट में मैसेज भी भेज दीजिए');
+    return;
+  }
+
+  document.getElementById('dlbtn').click();
+  offerMessage('तस्वीर डाउनलोड हो गई — पहले वह भेजिए, फिर मैसेज');
+};
+
+msgbtn.onclick = ()=>{
+  window.open('https://wa.me/?text=' + encodeURIComponent(shareText()), '_blank');
+};
+
+document.getElementById('againbtn').onclick = ()=>{
+  paid = false;
+  msgbtn.hidden = true;
+  shareHint.hidden = true;
+  document.getElementById('done').classList.remove('on');
+  document.getElementById('buy').classList.remove('off');
+  nm.value=''; validate(); draw();
+  nm.focus();
+};
+
+/* ---------- boot ---------- */
+(async ()=>{
+  // Devanagari must be loaded before the first draw, or conjuncts break.
+  try{
+    await document.fonts.load('400 90px "'+CONFIG.NAME_FONT+'"');
+    await document.fonts.ready;
+  }catch(e){}
+  nm.value = 'श्रद्धा';          // show the effect immediately
+  validate();
+  await draw();
+  nm.addEventListener('focus', function once(){
+    if(nm.value === 'श्रद्धा'){ nm.value=''; validate(); draw(); }
+    nm.removeEventListener('focus', once);
+  });
+})();
+</script>
+</body>
+</html>
