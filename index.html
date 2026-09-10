@@ -180,11 +180,11 @@ footer a{color:var(--brass)}
 <div class="done" id="done">
   <button class="dl" id="dlbtn">तस्वीर डाउनलोड कीजिए</button>
   <button class="share" id="shbtn">WhatsApp · स्टेटस पर भेजिए</button>
-  <p class="nudge">स्टेटस पर लगाइए — जो देखेगा, वो भी अपने नाम का बनाएगा 🙏</p>
+  <p class="nudge">भेजते समय नीचे <b>“Add a message”</b> में <b>पेस्ट</b> कीजिए —<br>मैसेज और लिंक अपने आप कॉपी हो जाएगा 🙏</p>
   <div class="step2" id="step2" hidden>
-    <p class="step2t">तस्वीर भेज दी? अब लिंक भी भेज दीजिए —<br>तभी सामने वाला अपने नाम का बना पाएगा।</p>
+    <p class="step2t">पेस्ट करना रह गया? कोई बात नहीं —<br>लिंक अलग से भी भेज सकते हैं।</p>
     <button class="share on" id="msgbtn">उसी चैट में लिंक भेजिए</button>
-    <button class="copy" id="copybtn">लिंक कॉपी कीजिए</button>
+    <button class="copy" id="copybtn">मैसेज दोबारा कॉपी कीजिए</button>
   </div>
   <p class="hint" id="shareHint" hidden></p>
   <button class="again" id="againbtn">दूसरा नाम बनाइए</button>
@@ -466,20 +466,26 @@ function offerStep2(hint){
   shareHint.hidden = false;
 }
 
-// The link is a second, separate send. Passing it as Web Share `text` makes
-// WhatsApp post it as its own message *ahead* of the photo, and a caption
-// cannot be set from a web page at all (w3c/web-share#279) — so the photo
-// goes alone first and the link follows it, staying tappable.
+// Aim: one WhatsApp message, image with the text under it as a caption.
+// Only a paste can put text in that caption box — passing it as Web Share
+// `text` makes WhatsApp post it as its own message ahead of the photo
+// (w3c/web-share#279). So the message is on the clipboard before the share
+// sheet opens, leaving the user a single paste.
+//
+// The copy is deliberately not awaited: an extra await between the click and
+// share() can spend the transient activation that share() requires.
 document.getElementById('shbtn').onclick = async ()=>{
   const blob = await toBlob();
   const file = new File([blob], fileName(), {type:'image/jpeg'});
   shareHint.hidden = true;
   step2.hidden = true;
 
+  const copied = navigator.clipboard.writeText(shareText()).then(()=>true).catch(()=>false);
+
   if(navigator.canShare && navigator.canShare({files:[file]})){
     try{ await navigator.share({ files:[file] }); }
     catch(e){ return; }
-    offerStep2('तस्वीर भेज दी 🙏');
+    offerStep2(await copied ? 'भेज दी 🙏 — पेस्ट किया या नहीं?' : 'तस्वीर भेज दी 🙏');
     return;
   }
 
